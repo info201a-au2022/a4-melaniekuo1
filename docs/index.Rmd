@@ -1,6 +1,6 @@
 ---
-title: "Your A4 Report Title (TODO: Revise title)"
-author: "Your Name"
+title: "Analyzing Incarceration in the United States"
+author: "Melanie Kuo"
 date: '2022-11-01'
 output: html_document
 ---
@@ -11,35 +11,36 @@ source("../source/analysis.R")
 ```
 
 ## Abstract 
-[TODO: Include a short abstract (about 50 words)]
-
-# Test (TODO: Remove before submission!!)
-```{r echo=FALSE}
-q1_string <- test_query1()
-num <- 5
-```
-As you know, this is a markdown report. The [R Markdown Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) is **useful!**
-
-* Here's a test of a dynamic variable. Say **"`r q1_string`!!!** 
-* Here's another test. A vector
-of numbers: `r test_query2(num)`.
-
-Recall that _{r echo=TRUE}_ can be used to display the code, 
-which is very useful when developing and debugging a report. Here's an example: 
-
-```{r echo=TRUE}
-num <- 5
-sum <- sum(test_query2(num))
-print(sum)
-```
-
+Analysis of U.S. incareceration system, with a close look at the impact of geographical location factors. This report also includes data regarding the increase in population from 
 ## Introduction 
-[TODO]
+This report will analyze incarceration across the United States, according to data from the Vera Institute. Currently, there are many issues surrounding incarceration in this country, including the disproportional impact of BIPOC individuals or geographically based -- meaning that the rate at which one could be in jail or in prison would be higher due to factors like race or where they live. Indirect stakeholders include all individuals across the U.S., families of those in the jail system, as well as those in positions of power to achieve justice in the U.S. jail system, such as government officials and leaders. Additionally, those in the jail system are direct stakeholders for this research. In this report, I will focus on the factor of geographic location and analyze the following questions:
+ 
+* Analyze the county with the highest jail population. What is the correlation between counties and jail population, and why might this be? 
+* What region has the highest jail population, and why might this be?
+* What counties have the highest juvenile jail population, and why might this be?
 
 ## Data Summary 
-[TODO]
 
-[TODO ... other sections ... See Canvas for details]
+As part of this report, I made a point to analyze whether or not geographic locations serve as a factor for incarceration rates. According to the dataset, the U.S. county with the highest total jail population is `r summary_data_max_county`, and the geographic region with the highest total jail population is the `r summary_data_max_region` region. I also wanted to determine this geographic factor with juvenile incarceration rates, which were determined to be `r summary_data_max_juv` for highest female juvenile incarceration rates and `r summary_data_max_juv_male` for highest male juvenile incarceration rates. 
 
-_All the very best with your work!_
+Considering geographic location is an important step in determining inequality in the prison system. Areas of higher affluence may have lower rates of incarceration, which puts those of higher class at a position of power, affecting individuals solely based off where they reside. Additionally, geographic location is tied to other factors that may be of influence, such as educational resources or homelessness. These observations helped begin the demonstration of interconnection between power in the U.S. prison system. 
 
+## Section 3 | Jail Population Increase
+```{r plot_jail_pop_for_us, echo=FALSE}
+plot_jail_pop_for_us()
+```
+
+This visualization shows the increase of the U.S. jail population over time from 1970 to 2018. 
+
+Summary paragraph. A brief paragraph (50 words or more) that summarizes the key patterns that appear to be revealed in the chart.
+
+From the chart, one can determine that the jail population in the United States has increased significantly between 1970 and 2018. It's important to consider reasons for this jail population growth, such as an overall increase in the general population of the country. However, it is evident that the amount of people in jail has experienced growth over time. 
+
+## Section 4 | Growth of Prison Populations by State
+```{r plot_jail_pop_by_states, echo=FALSE, message=FALSE}
+plot_jail_pop_by_states(c("WA", "CA", "WY", "VT", "VA", "NY"))
+```
+
+This visualization shows the jail population of 6 states (Washington, California, Wyoming, Vermont, Virginia, and New York) from 1970 to 2018. 
+
+According to the chart, California has historically had the highest rate of growth for their jail population, acclimating greatly between 1980 and 1990. The next highest states are followed by New York and Virginia, the latter of which currently has the higher pattern of growth in jail population rate. Lastly, the rate includes Washington, followed by Vermont and Wyoming with the lowest jail populations. I chose these states specifically because I wanted to compare the rates of jail population between the West and Northeast regions. California and New York are two of the country's two most populous states, so I decided to compare states on the West Coast with states on the East Coast that had a similar overall population. This data demonstrates that generally, the west has a higher rate of jail population, but this may be a factor due in part to California's significant population compared to all other states. 
