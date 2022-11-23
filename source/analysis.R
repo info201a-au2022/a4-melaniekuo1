@@ -7,21 +7,6 @@ library(sp)
 # The functions might be useful for A4
 source("../source/a4-helpers.R")
 
-## Test queries ----
-#----------------------------------------------------------------------------#
-# Simple queries for basic testing
-#----------------------------------------------------------------------------#
-# Return a simple string
-test_query1 <- function() {
-  return ("Hello world")
-}
-
-# Return a vector of numbers
-test_query2 <- function(num=6) {
-  v <- seq(1:num)
-  return(v)
-}
-
 ## Section 2  ---- 
 #----------------------------------------------------------------------------#
 # Your functions and variables might go here ... <todo: update comment>
@@ -116,29 +101,6 @@ plot_testing_get_juv <- function() {
   return(juv_plot)
 }
 
-# Testing with California!
-
-cali_df <- incar_data %>% 
-  filter(state == "CA") %>% 
-  select(year, county_name, male_juvenile_jail_pop)
-
-
-cali_get_juv <- function() {
-  cali_juv_jail_pop_states <- incar_data %>% 
-  return(cali_juv_jail_pop_states)   
-}
-
-plot_cali_get_juv <- function() {
-  cali_plot <- ggplot(cali_get_juv()) +
-    ggtitle("Growth of Juvenile Prison Population by States") +
-    geom_line(mapping = aes(x = year, y = male_juvenile_jail_pop, color = county_name)) +
-    labs(x = "Year", y = "Total Juvenile Jail Population")
-  return(cali_plot)
-}
-
-View(cali_df)
-plot_cali_get_juv()
-
 #----------------------------------------------------------------------------#
 
 ## Section 6  ---- 
@@ -154,16 +116,6 @@ state_shape <- map_data("state") %>%
   rename(state = region) %>% 
   full_join(ice_incar, by="state", na.rm = TRUE) 
   
-ggplot(state_shape) +
-  geom_polygon(
-    mapping = aes(x = long, y = lat, group = group, fill = total_jail_from_ice),
-    color = "white", 
-    size = .1) +
-  coord_map() + 
-  scale_fill_continuous(low = "#132B43", high = "Red") +
-  labs(fill = "Total Jail Population from ICE") +
-  blank_theme
-
 blank_theme <- theme_bw() +
   theme(
     axis.line = element_blank(),
@@ -175,7 +127,19 @@ blank_theme <- theme_bw() +
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
   )
+  
+state_map <- ggplot(state_shape) +
+  geom_polygon(
+    mapping = aes(x = long, y = lat, group = group, fill = total_jail_from_ice),
+    color = "white", 
+    linewidth = .1) +
+  coord_map() + 
+  scale_fill_continuous(low = "#132B43", high = "Red") +
+  ggtitle("Map of Jail Population from ICE in the United States") +
+  labs(fill = "Total Jail Population from ICE") +
+  blank_theme
 
+state_map
 #----------------------------------------------------------------------------#
 
 ## Load data frame ---- 
