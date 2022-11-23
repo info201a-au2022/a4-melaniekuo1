@@ -1,6 +1,8 @@
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(cartography)
+library(sp)
 
 # The functions might be useful for A4
 source("../source/a4-helpers.R")
@@ -61,8 +63,6 @@ get_year_jail_pop <- function() {
   return(jail_pop_yearly)   
 }
 
-# This function ... <todo:  update comment>
-
 plot_jail_pop_for_us <- function()  {
   testing_plot <- ggplot(get_year_jail_pop()) +
     ggtitle("Increase of Jail Population in U.S. (1970-2018)") +
@@ -100,37 +100,44 @@ plot_jail_pop_by_states <- function(states) {
 # <variable comparison that reveals potential patterns of inequality>
 # Your functions might go here ... <todo:  update comment>
 
-get_female_juv_jail_pop <- function() {
-  female_juvenile_jail_population <- incar_data %>% 
-    group_by(state) %>% 
-    summarise(female_juvenile_jail_pop = sum(female_juvenile_jail_pop, na.rm = TRUE))
+testing_get_juv <- function() {
+  juv_jail_pop_states <- incar_data %>% 
+    group_by(year, state) %>%
+    summarise(juv_total_jail_pop = sum(female_juvenile_jail_pop, 
+                                         male_juvenile_jail_pop, na.rm = TRUE))
+  return(juv_jail_pop_states)   
 }
 
-get_male_juv_jail_pop <- function() {
-  male_juvenile_jail_population <- incar_data %>% 
-    group_by(state) %>% 
-    summarise(male_juvenile_jail_pop = sum(male_juvenile_jail_pop, na.rm = TRUE))
+plot_testing_get_juv <- function() {
+  juv_plot <- ggplot(testing_get_juv()) +
+    ggtitle("Growth of Juvenile Prison Population by States") +
+    geom_line(mapping = aes(x = year, y = juv_total_jail_pop, color = state)) +
+    labs(x = "Year", y = "Total Juvenile Jail Population")
+  return(juv_plot)
 }
 
-plot_juv_jail <- function() {
-  plot_jail_juv_plot <- ggplot(get_male_juv_jail_pop()) +
-    ggtitle("Juvenile Jail Population") +
-    geom_line(mapping = aes(x = year, y = male_juvenile_jail_pop)) +
-    return(plot_jail_juv_plot)   
+# Testing with California!
+
+cali_df <- incar_data %>% 
+  filter(state == "CA") %>% 
+  select(year, county_name, male_juvenile_jail_pop)
+
+
+cali_get_juv <- function() {
+  cali_juv_jail_pop_states <- incar_data %>% 
+  return(cali_juv_jail_pop_states)   
 }
 
-plot_juv_jail()
-# This function ... <todo:  update comment>
+plot_cali_get_juv <- function() {
+  cali_plot <- ggplot(cali_get_juv()) +
+    ggtitle("Growth of Juvenile Prison Population by States") +
+    geom_line(mapping = aes(x = year, y = male_juvenile_jail_pop, color = county_name)) +
+    labs(x = "Year", y = "Total Juvenile Jail Population")
+  return(cali_plot)
+}
 
-plot_jail_pop_for_us <- function()  {
-  testing_plot <- ggplot(get_year_jail_pop()) +
-    ggtitle("Increase of Jail Population in U.S. (1970-2018)") +
-    geom_col(mapping = aes(x = year, y = total_jail_pop)) +
-    scale_y_continuous(labels = scales::comma, breaks = scales::pretty_breaks()) +
-    labs(x = "Year", y = "Total Jail Population")
-  return(testing_plot)   
-} 
-
+View(cali_df)
+plot_cali_get_juv()
 
 #----------------------------------------------------------------------------#
 
@@ -138,7 +145,37 @@ plot_jail_pop_for_us <- function()  {
 #----------------------------------------------------------------------------#
 # <a map shows potential patterns of inequality that vary geographically>
 # Your functions might go here ... <todo:  update comment>
-# See Canvas
+
+ice_incar <- incar_data %>%
+  filter(year == 2016) %>% 
+  select(state, total_jail_from_ice)
+
+state_shape <- map_data("state") %>%
+  rename(state = region) %>% 
+  full_join(ice_incar, by="state", na.rm = TRUE) 
+  
+ggplot(state_shape) +
+  geom_polygon(
+    mapping = aes(x = long, y = lat, group = group, fill = total_jail_from_ice),
+    color = "white", 
+    size = .1) +
+  coord_map() + 
+  scale_fill_continuous(low = "#132B43", high = "Red") +
+  labs(fill = "Total Jail Population from ICE") +
+  blank_theme
+
+blank_theme <- theme_bw() +
+  theme(
+    axis.line = element_blank(),
+    axis.text = element_blank(), 
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    plot.background = element_blank(),
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+  )
+
 #----------------------------------------------------------------------------#
 
 ## Load data frame ---- 
