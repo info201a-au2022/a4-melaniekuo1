@@ -59,6 +59,7 @@ This chart demonstrates the growth of juvenile jail populations (both male and f
 
 
 ## Section 6 | Total Jail Population from ICE Across the Country
+### Map of Jail Population from ICE in the U.S.
 ```{r state_map, echo=FALSE, message=FALSE}
 state_map
 ```

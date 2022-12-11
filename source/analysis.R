@@ -5,7 +5,7 @@ library(cartography)
 library(sp)
 
 # The functions might be useful for A4
-source("../source/a4-helpers.R")
+source("..source/a4-helpers.R")
 
 ## Section 2  ---- 
 #----------------------------------------------------------------------------#
@@ -110,11 +110,25 @@ plot_testing_get_juv <- function() {
 
 ice_incar <- incar_data %>%
   filter(year == 2016) %>% 
-  select(state, total_jail_from_ice)
+  group_by(state) %>% 
+  summarise(total_jail_from_ice = (sum(total_jail_from_ice, na.rm = TRUE)))
 
 state_shape <- map_data("state") %>%
-  rename(state = region) %>% 
-  full_join(ice_incar, by="state", na.rm = TRUE) 
+  rename(states = region)
+
+state_shape$states <- tolower(state_shape$states)
+
+ice_incar <- ice_incar[-8, ]
+
+rename_states <- data.frame(state.name, state.abb) %>% 
+  rename(state = state.abb)
+rename_states <- rename_states %>% 
+  arrange(rename_states$state)
+ice_incar <- left_join(ice_incar, rename_states, by = 'state') %>% 
+  rename(states = state.name.x)
+ice_incar$states <- tolower(ice_incar$states)
+full_ice_incar <- left_join(ice_incar, state_shape, by = 'states')
+
   
 blank_theme <- theme_bw() +
   theme(
@@ -128,7 +142,7 @@ blank_theme <- theme_bw() +
     panel.grid.minor = element_blank(),
   )
   
-state_map <- ggplot(state_shape) +
+state_map <- ggplot(full_ice_incar) +
   geom_polygon(
     mapping = aes(x = long, y = lat, group = group, fill = total_jail_from_ice),
     color = "white", 
